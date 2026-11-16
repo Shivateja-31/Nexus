@@ -47,3 +47,4 @@ if __name__ == "__main__":
     test_dns_inspector_tool()
     print("  ✓ dns-inspector tool passed")
     print("[+] All CLI unit tests passed successfully!")
+

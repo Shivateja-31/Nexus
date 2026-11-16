@@ -41,3 +41,4 @@ class CrawlResult(BaseModel):
     executive_summary: str = ""
     execution_time_seconds: float = 0.0
     error: Optional[str] = None
+

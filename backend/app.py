@@ -258,3 +258,4 @@ def index():
         with open(index_file, "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
     return HTMLResponse("<h2>NexusCLI Agent Frontend is building...</h2>")
+

@@ -134,3 +134,4 @@ sequenceDiagram
 | `2` | Invalid CLI arguments / URL format | Input validation rejection rendered in red warning card |
 | `3` | Blocked by `robots.txt` policy | Explicit policy notification returned to user |
 | `-9` | Execution timeout (killed after 30s) | Terminated safely, partial logs returned |
+

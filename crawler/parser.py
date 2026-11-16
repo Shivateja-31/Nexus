@@ -162,3 +162,4 @@ class WebContentParser(HTMLParser):
 
         # Clean empty heading keys
         self.headings = {k: v for k, v in self.headings.items() if v}
+

@@ -79,3 +79,4 @@ if __name__ == "__main__":
     test_dns_tool_invocation()
     print("  ✓ Secondary CLI tool (dns-inspector) passed")
     print("\n[+] ALL END-TO-END INTEGRATION TESTS PASSED (100%)!")
+

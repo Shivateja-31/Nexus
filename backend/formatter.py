@@ -171,3 +171,4 @@ class OutputFormatter:
             execution_meta={"status": "blocked_by_security_policy"},
             terminal_logs=f"[SECURITY ALERT] Target '{url}' violated security policy: {error_message}"
         )
+

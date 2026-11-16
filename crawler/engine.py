@@ -251,3 +251,4 @@ class CrawlerEngine:
                 execution_time_seconds=round(time.time() - start_time, 2),
                 error=f"Crawl execution error: {str(e)}"
             )
+

@@ -93,3 +93,4 @@ def validate_target_url(url: str, allow_private: bool = False) -> Tuple[bool, st
 def validate_cli_tool(tool_name: str) -> bool:
     """Ensure tool is on the approved allowlist."""
     return tool_name in APPROVED_CLI_TOOLS
+
