@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexusCLI — CLI-Driven AI Execution Agent</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            darkBg: '#0b0f19',
+            darkCard: '#111827',
+            darkBorder: '#1f2937',
+            terminalBg: '#050811',
+          },
+          fontFamily: {
+            mono: ['Consolas', 'Monaco', 'Courier New', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col font-sans antialiased overflow-hidden">
+
+  <!-- Top Navigation Bar -->
+  <header class="h-14 border-b border-darkBorder bg-darkCard/80 backdrop-blur px-4 flex items-center justify-between z-20">
+    <div class="flex items-center gap-3">
+      <button id="toggle-sidebar-btn" class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition md:hidden">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-brand-500/20">
+          <i data-lucide="terminal" class="w-4 h-4 text-white"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-sm tracking-wide text-white">Nexus<span class="text-brand-400">CLI</span></h1>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 border border-brand-500/30">ROUND 2 PROTOTYPE</span>
+          </div>
+          <p class="text-[11px] text-slate-400 -mt-0.5">CLI-Driven AI Chat Execution for Complex Tasks</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-3">
+      <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Subprocess Orchestrator Active</span>
+      </div>
+      <button id="clear-chat-btn" title="Clear Chat" class="px-2.5 py-1 text-xs text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 rounded-md border border-slate-700 flex items-center gap-1.5 transition">
+        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+        <span>Clear</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="flex flex-1 overflow-hidden relative">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-80 border-r border-darkBorder bg-darkCard/95 flex flex-col flex-shrink-0 transition-all duration-300 z-10 absolute md:static inset-y-0 left-0 -translate-x-full md:translate-x-0 shadow-2xl md:shadow-none">
+      
+      <!-- Quick Demo Tasks -->
+      <div class="p-3 border-b border-darkBorder">
+        <h3 class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-400"></i>
+          Evaluation Demo Presets
+        </h3>
+        <div class="space-y-1.5 text-xs">
+          <!-- Mandatory Demo -->
+          <button class="preset-btn w-full text-left p-2 rounded-lg bg-brand-600/15 border border-brand-500/30 hover:bg-brand-600/25 transition group text-brand-200"
+                  data-prompt="Crawl https://example.com, extract the important information, give me a summary, and return the extracted data in JSON format.">
+            <div class="font-medium text-brand-300 flex items-center justify-between">
+              <span class="flex items-center gap-1">🌟 Mandatory Use Case</span>
+              <span class="text-[9px] px-1 py-0.2 rounded bg-brand-500/30">example.com</span>
+            </div>
+            <p class="text-[11px] text-slate-400 truncate mt-0.5">Crawl, summarize & extract structured JSON</p>
+          </button>
+
+          <!-- Multi-page crawl -->
+          <button class="preset-btn w-full text-left p-2 rounded-lg bg-slate-800/50 border border-slate-700/60 hover:bg-slate-800 transition text-slate-300"
+                  data-prompt="Crawl https://httpbin.org with max 2 pages and depth 2, summarize the capabilities, and return the result in JSON format.">
+            <div class="font-medium text-slate-200 flex items-center justify-between">
+              <span class="flex items-center gap-1">🌐 Multi-Page Crawl</span>
+              <span class="text-[9px] px-1 py-0.2 rounded bg-slate-700 text-slate-300">depth=2</span>
+            </div>
+            <p class="text-[11px] text-slate-400 truncate mt-0.5">Recursive crawl across domain with page limits</p>
+          </button>
+
+          <!-- DNS Inspector -->
+          <button class="preset-btn w-full text-left p-2 rounded-lg bg-slate-800/50 border border-slate-700/60 hover:bg-slate-800 transition text-slate-300"
+                  data-prompt="Inspect DNS records and network connectivity for wikipedia.org in JSON format.">
+            <div class="font-medium text-slate-200 flex items-center justify-between">
+              <span class="flex items-center gap-1">🔍 Tool 2: DNS Inspector</span>
+              <span class="text-[9px] px-1 py-0.2 rounded bg-cyan-900/40 text-cyan-300">dns-tool</span>
+            </div>
+            <p class="text-[11px] text-slate-400 truncate mt-0.5">Demonstrates multi-CLI tool selection</p>
+          </button>
+
+          <!-- Security SSRF Edge Case -->
+          <button class="preset-btn w-full text-left p-2 rounded-lg bg-rose-950/20 border border-rose-800/30 hover:bg-rose-950/40 transition text-rose-200"
+                  data-prompt="Crawl http://127.0.0.1:8000/secret-admin-console and extract data in JSON">
+            <div class="font-medium text-rose-300 flex items-center justify-between">
+              <span class="flex items-center gap-1">🛡️ SSRF Security Block</span>
+              <span class="text-[9px] px-1 py-0.2 rounded bg-rose-900/50 text-rose-200">Security</span>
+            </div>
+            <p class="text-[11px] text-rose-400/80 truncate mt-0.5">Verifies loopback / private IP defense</p>
+          </button>
+
+          <!-- Inaccessible Domain Edge Case -->
+          <button class="preset-btn w-full text-left p-2 rounded-lg bg-amber-950/20 border border-amber-800/30 hover:bg-amber-950/40 transition text-amber-200"
+                  data-prompt="Crawl https://invalid-domain-does-not-exist-xyz999.org and summarize the content">
+            <div class="font-medium text-amber-300 flex items-center justify-between">
+              <span class="flex items-center gap-1">⚠️ Error Handling</span>
+              <span class="text-[9px] px-1 py-0.2 rounded bg-amber-900/50 text-amber-200">Failure</span>
+            </div>
+            <p class="text-[11px] text-amber-400/80 truncate mt-0.5">Honest failure reporting on DNS errors</p>
+          </button>
+        </div>
+      </div>
+
+      <!-- Approved CLI Tools & Architecture Specs -->
+      <div class="flex-1 overflow-y-auto p-3 space-y-3">
+        <div>
+          <h3 class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+            Approved CLI Tool Registry
+          </h3>
+          <div class="space-y-2 text-xs">
+            <div class="p-2 rounded bg-slate-800/40 border border-slate-700/50">
+              <div class="flex items-center justify-between font-mono text-[11px] text-brand-300">
+                <span>site-crawler</span>
+                <span class="text-emerald-400 text-[10px]">ALLOWLISTED</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Autonomous crawler, HTML parser, and JSON extractor.</p>
+              <div class="mt-1 text-[10px] text-slate-500 font-mono">Flags: --url, --max-pages, --depth, --format</div>
+            </div>
+
+            <div class="p-2 rounded bg-slate-800/40 border border-slate-700/50">
+              <div class="flex items-center justify-between font-mono text-[11px] text-cyan-300">
+                <span>dns-inspector</span>
+                <span class="text-emerald-400 text-[10px]">ALLOWLISTED</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Host record resolver and SSL probe.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Guardrails Info -->
+        <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] space-y-1.5">
+          <div class="font-semibold text-slate-300 flex items-center gap-1.5">
+            <i data-lucide="lock" class="w-3.5 h-3.5 text-brand-400"></i>
+            Security Guardrails Active
+          </div>
+          <ul class="text-slate-400 space-y-1 list-disc list-inside">
+            <li>Zero shell injection: safe <code>argv</code> array</li>
+            <li>SSRF protection (RFC 1918 & metadata blocked)</li>
+            <li>Robots.txt compliance engine</li>
+            <li>30-second execution timeout killswitch</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="p-3 border-t border-darkBorder bg-slate-900/60 text-[11px] text-slate-400 flex items-center justify-between">
+        <span>BuildSprint Round 2</span>
+        <span class="text-slate-500">v1.0.0</span>
+      </div>
+    </aside>
+
+    <!-- Chat Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-gradient-to-b from-darkBg to-[#0d121f]">
+      
+      <!-- Messages List -->
+      <div id="messages-container" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+        
+        <!-- Welcome Hero Message -->
+        <div class="max-w-3xl mx-auto p-5 rounded-xl bg-darkCard/90 border border-darkBorder shadow-xl text-sm">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-500/30 flex items-center justify-center flex-shrink-0 text-brand-400">
+              <i data-lucide="cpu" class="w-5 h-5"></i>
+            </div>
+            <div class="space-y-2">
+              <div class="flex items-center gap-2">
+                <h2 class="font-bold text-base text-white">CLI-Driven Conversational Execution Ready</h2>
+                <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ONLINE</span>
+              </div>
+              <p class="text-slate-300 leading-relaxed text-xs sm:text-sm">
+                This system translates your natural-language instructions into controlled, multi-step CLI executions.
+                Unlike pure text-generating chat apps, NexusCLI programmatically invokes approved CLI tools from the backend,
+                streams real-time stderr/stdout logs, validates structured JSON, and presents verified summaries.
+              </p>
+              
+              <div class="pt-2 flex flex-wrap gap-2 text-xs">
+                <button class="preset-btn px-3 py-1.5 rounded-lg bg-brand-600 text-white hover:bg-brand-500 font-medium flex items-center gap-1.5 shadow-md shadow-brand-500/20 transition"
+                        data-prompt="Crawl https://example.com, extract the important information, give me a summary, and return the extracted data in JSON format.">
+                  <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                  Run Mandatory Demonstration Use Case
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Execution Progress Banner (shown during execution) -->
+      <div id="execution-banner" class="hidden px-6 py-2 bg-brand-950/60 border-t border-b border-brand-800/40 text-xs flex items-center justify-between">
+        <div class="flex items-center gap-2 text-brand-300">
+          <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-brand-400"></i>
+          <span id="execution-banner-text" class="font-mono">Invoking backend CLI process...</span>
+        </div>
+        <div class="text-[11px] text-slate-400 flex items-center gap-2">
+          <span id="execution-banner-tool" class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">site-crawler</span>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="p-4 border-t border-darkBorder bg-darkCard/80 backdrop-blur">
+        <div class="max-w-4xl mx-auto space-y-2">
+          <form id="chat-form" class="relative flex items-end gap-2 bg-slate-900 border border-slate-700/80 rounded-xl p-2 focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 transition shadow-inner">
+            <textarea
+              id="prompt-input"
+              rows="1"
+              placeholder="Ask me to crawl a website, summarize content, or extract structured JSON..."
+              class="w-full bg-transparent resize-none outline-none text-slate-100 placeholder-slate-500 text-sm px-2 py-1 max-h-36 min-h-[38px]"
+            ></textarea>
+            <button
+              type="submit"
+              id="send-btn"
+              class="px-3.5 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-brand-500/20"
+            >
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+          </form>
+
+          <div class="flex items-center justify-between text-[11px] text-slate-500 px-1">
+            <div class="flex items-center gap-2">
+              <span>Press <kbd class="px-1 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">Enter</kbd> to execute</span>
+              <span>•</span>
+              <span><kbd class="px-1 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">Shift+Enter</kbd> for newline</span>
+            </div>
+            <span class="text-slate-400 flex items-center gap-1">
+              <i data-lucide="shield" class="w-3 h-3 text-emerald-400"></i>
+              Safe Subprocess Mode
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Custom Scripts -->
+  <script src="/static/app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
